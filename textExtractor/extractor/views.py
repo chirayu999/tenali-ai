@@ -1,12 +1,13 @@
 from django.http import HttpResponse
 import requests
-from bs4 import BeautifulSoup
 from .extract_text_with_nltk import extract_text_with_nltk
 from .text_to_document import create_google_doc
+from .clean_text import clean_html_text, clean_text
+from .summarize_with_openai import summarize_with_openai
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("Hello, world")
 
 
 def extract_text(request):
@@ -15,11 +16,12 @@ def extract_text(request):
         response = requests.get(url)
 
         if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            extracted_text = soup.get_text()
+
+            text_from_html = clean_html_text(response.text)
+            text = clean_text(text_from_html)
 
             with open('text_document.txt', 'w') as file:
-                file.write(extracted_text)
+                file.write(text)
 
             return HttpResponse('Text extracted and saved successfully.')
 
@@ -34,8 +36,8 @@ def nltk(request):
         response = requests.get(url)
 
         if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            text = soup.get_text()
+            text_from_html = clean_html_text(response.text)
+            text = clean_text(text_from_html)
             extracted_text = extract_text_with_nltk(text)
 
             # google_doc_url = create_google_doc('Extracted Text', extracted_text)
@@ -45,5 +47,23 @@ def nltk(request):
 
             return HttpResponse('Error: Could not extract text.')
 
+    return HttpResponse('Error: Could not fetch the URL.')
+
+
+def openai(request):
+    if request.method == 'GET':
+        url = request.GET.get('url')
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            text_from_html = clean_html_text(response.text)
+            text = clean_text(text_from_html)
+            nltk_text = extract_text_with_nltk(text)
+            prompt = "given the following text, don't summarize but make it meaningful by seperating into title and paragraphs"
+            extracted_text = summarize_with_openai(prompt, nltk_text)
+            if extracted_text:
+                return HttpResponse(extracted_text)
+
+            return HttpResponse('Error: Could not extract text.')
 
     return HttpResponse('Error: Could not fetch the URL.')
