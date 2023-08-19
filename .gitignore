@@ -50,3 +50,7 @@ node_modules/
 *.bak
 *.tmp
 *.csv
+
+# Google Cloud Platform service account key files
+cred.json
+
