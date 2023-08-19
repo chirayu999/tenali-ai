@@ -2,6 +2,7 @@ from django.http import HttpResponse
 import requests
 from bs4 import BeautifulSoup
 from .extract_text_with_nltk import extract_text_with_nltk
+from .text_to_document import create_google_doc
 
 
 def index(request):
@@ -36,6 +37,8 @@ def nltk(request):
             soup = BeautifulSoup(response.text, 'html.parser')
             text = soup.get_text()
             extracted_text = extract_text_with_nltk(text)
+
+            # google_doc_url = create_google_doc('Extracted Text', extracted_text)
 
             if extracted_text:
                 return HttpResponse(extracted_text)
