@@ -1,0 +1,52 @@
+# Compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local development settings
+*.env
+*.sqlite3
+
+# Static files and media
+/staticfiles/
+/media/
+
+# Logs and backups
+*.log
+*.bak
+
+# Environment-specific settings
+*.pyc
+*.pyo
+*.env
+
+# Secret keys
+*.secret_key
+*.settings
+
+# Compiled files
+*.pyc
+*.pyo
+
+# IDE settings
+.vscode/
+.idea/
+
+# Dependency directories
+venv/
+node_modules/
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+*~
+*.swp
+
+# Miscellaneous
+*.bak
+*.tmp
+*.csv
